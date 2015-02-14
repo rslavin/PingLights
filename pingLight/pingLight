@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+
+
+## SCRIPT VARS, DON'T MODIFY
+########################################
+
+SCRIPT_PATH=$(dirname $(readlink -f ${0}))
+PINGLIGHT_DIR=${HOME}/scripts/pingLight
+PID_FILE="/tmp/pingLight.pid"
+
+
+## LOAD TEXT FORMATTER
+########################################
+
+source ${SCRIPT_PATH}/format.sh
+
+
+## CREAT PINGLIGHT DIR IF MISSING
+########################################
+
+if [[ ! -d "${PINGLIGHT_DIR}" ]]; then
+    mkdir -p ${PINGLIGHT_DIR}
+fi
+
+## FUNCTIONS
+########################################
+
+function getPid {
+
+    # Check if PID file exists
+    if [[ -e "${PID_FILE}" ]]; then
+
+        # Get the PID
+        PID=$(cat ${PID_FILE})
+
+    fi
+
+    # Return the PID
+    echo ${PID}
+
+}
+
+
+function startPingLight {
+
+    # Echo status message to console
+    printf "Starting PingLight"
+
+    if [[ ! -f ${PID_FILE} ]]; then
+
+        # Establish SOCKS connection
+        #ssh -qfCD ${LOCAL_PORT} ${REMOTE_USER}@${REMOTE_HOST} -p ${REMOTE_PORT} -N  & > /dev/null 2>&1
+		C:/Python27/python C:/cygwin64/home/Rocky/scripts/pingLight/pingLight.py &
+	   #	> /dev/null 2>&1
+
+        # Create the PID file
+        echo $! > ${PID_FILE}
+
+        # Echo status message to console
+        echo "[ $(format OK ${GREEN} ${BOLD}) ]"
+
+    else
+
+        echo "[$(format FAIL ${RED} ${BOLD} ${BLACK})]"
+        echo "PingLight already running, try restarting"
+
+    fi
+
+}
+
+
+function stopPingLight {
+
+    # Echo status message to console
+    printf "Stopping PingLight"
+
+    if [[ ! -z "$(getPid)" ]]; then
+		# Kill the process
+        kill $(getPid) > /dev/null 2>&1
+        # Remove the PID file
+        if [[ -f ${PID_FILE} ]]; then
+            rm -f ${PID_FILE}
+        fi
+
+        # Echo status message to console
+        echo "[ $(format OK ${GREEN} ${BOLD}) ]"
+
+    else
+
+        echo "[$(format FAIL ${RED} ${BOLD} ${BLACK})]"
+        echo "No running PingLight process found"
+
+    fi
+
+}
+
+
+## SWITCHES
+########################################
+
+case ${1} in
+
+    'start')
+        startPingLight
+    ;;
+
+    'stop')
+        stopPingLight
+    ;;
+
+    'restart')
+        stopPingLight
+        startPingLight
+    ;;
+
+    'status')
+        if [[ ! -z "$(getPid)" ]]; then
+            echo "PingLight currently running -- PID: $(getPid)"
+        else
+            echo "PingLight is not currently running"
+        fi
+    ;;
+
+    *)
+        echo "Usage: $(basename ${0}) { start | stop | restart | status }"
+    ;;
+
+esac

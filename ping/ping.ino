@@ -23,6 +23,12 @@ void setColor(boolean* color){
   }
 }
 
+void blink(boolean* color){
+  setColor(BLACK);
+  delay(500);
+  setColor(color);
+  delay(500);
+}
 
 void setup() {
   Serial.begin(115200);
@@ -51,16 +57,10 @@ void loop() {
         setColor(RED);
         break;
       case '4': // timeout (blinks)
-        setColor(BLACK);
-        delay(500);
-        setColor(RED);
-        delay(500);
+        blink(RED);
         break;
       case '5': // intermittent (blinks)
-        setColor(BLACK);
-        delay(500);
-        setColor(YELLOW);
-        delay(500);
+        blink(YELLOW);
         break;
       default:
         setColor(BLACK);

@@ -51,7 +51,9 @@ function startPingLight {
         # Establish SOCKS connection
         #ssh -qfCD ${LOCAL_PORT} ${REMOTE_USER}@${REMOTE_HOST} -p ${REMOTE_PORT} -N  & > /dev/null 2>&1
 		C:/Python27/python C:/cygwin64/home/Rocky/scripts/pingLight/pingLight.py &
-	   #	> /dev/null 2>&1
+		# have to use windows python so the script can find the arduino's COM port
+		#python $PINGLIGHT_DIR/pingLight.py &
+ 	   #	> /dev/null 2>&1
 
         # Create the PID file
         echo $! > ${PID_FILE}

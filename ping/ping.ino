@@ -30,6 +30,13 @@ void blink(boolean* color){
   delay(500);
 }
 
+void blink(boolean* color1, boolean* color2){
+  setColor(color2);
+  delay(500);
+  setColor(color1);
+  delay(500);
+}
+
 void setup() {
   Serial.begin(115200);
   for(int i = 0; i < 3; i++){
@@ -56,13 +63,19 @@ void loop() {
       case '3': // bad
         setColor(RED);
         break;
-      case '4': // timeout (blinks)
+      case '4': // no connection
+        blink(RED, BLUE);
+        break;
+      case '5': // intermittent (medium latency)
+        blink(YELLOW, BLUE);
+        break;
+      case '6': // intermittent (good latency)
+        blink(GREEN, BLUE);
+        break;
+      case '7': // intermittent (bad latency)
         blink(RED);
         break;
-      case '5': // intermittent (blinks)
-        blink(YELLOW);
-        break;
-      default:
+      default: // off
         setColor(BLACK);
     }
   }else{

@@ -29,6 +29,7 @@ class FormPage(object):
 		#find_by_xpath('//input[@value = "Submit"]').click()
 		find_by_xpath('/html/body/table/tbody/tr/td/table/tbody/tr/td/form/table/tbody/tr[3]/td[2]/input').click()
 
+# Don't get excited, these aren't real credentials
 data = {
 		'username': 'slavin6142',
 		'password': 'ZipLink13'
